@@ -1,0 +1,25 @@
+{
+  "name": "cool-bookmarklets",
+  "version": "1.0.0",
+  "description": "A collection of cool bookmarklets for handsome growth hacker",
+  "main": "index.js",
+  "dependencies": {
+    "jquery": "^3.3.1"
+  },
+  "devDependencies": {
+    "netscape-bookmarks": "^0.1.0"
+  },
+  "scripts": {
+    "build": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gabriel-kaam/cool-bookmarklets.git"
+  },
+  "author": "Gabriel Kaam <gabriel@kaam.fr> (https://gabriel.kaam.fr)",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/gabriel-kaam/cool-bookmarklets/issues"
+  },
+  "homepage": "https://github.com/gabriel-kaam/cool-bookmarklets#readme"
+}
