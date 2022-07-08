@@ -1,4 +1,4 @@
-# Script for Growth Hack (bookmarklets)
+# Growth Hacker Scripts (bookmarklets)
 A collection of cool JS scripts to keep in your browser’s bookmarks for easy access.  
 The perfect tool for an handsome growth hacker like yourself ;)
 
