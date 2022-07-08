@@ -1,5 +1,6 @@
 # Growth Hacker Scripts (bookmarklets)
-A collection of cool JS scripts to keep in your browser’s bookmarks for easy access.  
+
+A collection of cool JS scripts to keep in (and run from) your browser’s bookmarks. Pretty neat huh?  
 The perfect tool for an handsome growth hacker like yourself ;)
 
 ## Installation
