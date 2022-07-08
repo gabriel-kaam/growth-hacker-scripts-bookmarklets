@@ -28,12 +28,7 @@ function handle_directory(directory, callback) {
   if(callback) callback();
 }
 
-function loadJQueryFrom() {
-  var data = fs.readFileSync('node_modules/jquery/dist/jquery.slim.min.js', 'utf8');
-  return data;
-}
-
-var jquery_code = '';//loadJQueryFrom();
+var jquery_code = '';
 
 handle_directory("bookmarklets");
 
