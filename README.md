@@ -24,3 +24,10 @@ Here's some help:
 
  - [Google Chrome](https://support.google.com/chrome/answer/96816)
  - [Mozilla Firefox](https://support.mozilla.org/en-US/kb/import-bookmarks-html-file)
+
+## Connect with me
+
+Gabriel Kaam
+ - https://knr.paris/
+ - http://gabriel.kaam.fr/
+ - https://www.linkedin.com/in/gabriel-kaam/
