@@ -47,6 +47,28 @@ async function traverseDirectory(directoryPath) {
   }
 }
 
+function insertCustomHtml(netscapeOutput) {
+  const insertionPoint = netscapeOutput.indexOf('<H1>Bookmarks Menu</H1>');
+  const customContent = `
+<link rel="stylesheet" href="https://gabriel-kaam.github.io/growth-hacker-scripts-bookmarklets/assets/css/style.css?v=1380f8ded3bafb61521c942c3a819086ddc77a06">
+
+<style>
+  .markdown-body dl dt {
+    font-style: normal;
+    font-weight: normal;
+  }
+</style>
+
+<div class="container-lg px-3 my-5 markdown-body">
+`;
+
+  if (insertionPoint !== -1) {
+    return netscapeOutput.slice(0, insertionPoint) + customContent + netscapeOutput.slice(insertionPoint);
+  }
+
+  return netscapeOutput;
+}
+
 async function generateBookmarklets() {
   global.jqueryCode = await minifyAndEncodeJavaScript(
     fs.readFileSync(path.resolve(__dirname, 'node_modules/jquery/dist/jquery.min.js'), 'utf8')
@@ -54,7 +76,9 @@ async function generateBookmarklets() {
 
   await traverseDirectory(bookmarkletsFolder);
 
-  const bookmarksHtml = netscape(bookmarks);
+  let bookmarksHtml = netscape(bookmarks);
+  bookmarksHtml = insertCustomHtml(bookmarksHtml);
+
   fs.writeFile(outputFilePath, bookmarksHtml, () =>
     console.log(`[+] Wrote ${Object.keys(bookmarks).length} bookmarks into '${outputFilePath}'.`)
   );
