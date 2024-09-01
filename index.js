@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const terser = require('terser');
 
-const outputFilePath = "build/bookmarklets.html";
+const outputFilePath = "bookmarklets.html";
 const bookmarks = {};
 const bookmarkletsFolder = 'bookmarklets';
 
