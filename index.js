@@ -1,62 +1,63 @@
-var netscape = require('netscape-bookmarks');
-var fs = require('fs');
-var path = require('path');
-var terser = require('terser');
+const netscape = require('netscape-bookmarks');
+const fs = require('fs');
+const path = require('path');
+const terser = require('terser');
 
-var out_file = "build/bookmarklets.html";
-var bookmarks = {};
+const outputFilePath = "build/bookmarklets.html";
+const bookmarks = {};
+const bookmarkletsFolder = 'bookmarklets';
 
-const folder = 'bookmarklets';
-
-function handle_thing(file_or_directory) {
-  return fs.statSync(file_or_directory).isFile() ? handle_file(file_or_directory) : handle_directory(file_or_directory);
-}
-
-async function parse_js_code(code) {
-  let minified = await terser.minify(code);
-  if (minified.error) {
-    throw new Error(`Error during minification: ${minified.error}`);
-  }
-
-  // Dynamically load jQuery if not already present
-  const jquery_loader = `
-    (function(){
-      if (typeof jQuery == 'undefined') {
-        var script = document.createElement('script');
-        script.src = 'https://code.jquery.com/jquery-3.6.0.min.js';
-        document.head.appendChild(script);
-        script.onload = function() { ${minified.code} };
-      } else {
-        ${minified.code}
-      }
-    })();
-  `;
-
-  return 'javascript:' + encodeURIComponent(jquery_loader.replace(/\r?\n|\r/g, " "));
-}
-
-async function handle_file(file) {
-  var data = fs.readFileSync(file, 'utf8');
-  var parsed_code = await parse_js_code(data);
-  file = file.substring(folder.length + 1);
-  bookmarks[file] = parsed_code;
-}
-
-async function handle_directory(directory, callback) {
-  var files = fs.readdirSync(directory);
-
-  for (const file of files) {
-    await handle_thing(path.join(directory, file));
-  }
-
-  if (callback) callback();
-}
-
-(async () => {
-  await handle_directory(folder);
-
-  var html = netscape(bookmarks);
-  fs.writeFile(out_file, html, function() {
-    console.log("[+] Wrote " + Object.keys(bookmarks).length + " bookmarks into '" + out_file + "'.");
+async function minifyAndEncodeJavaScript(code) {
+  const minifiedResult = await terser.minify(code, {
+    compress: true,
+    mangle: true,
+    output: {
+      comments: false
+    }
   });
-})();
+
+  if (minifiedResult.error) {
+    throw new Error(`Minification error: ${minifiedResult.error}`);
+  }
+
+  return minifiedResult.code
+    .replace(/"/g, '%22')
+    .replace(/\r?\n|\r/g, " ");
+}
+
+async function processJavaScriptFile(filePath) {
+  const fileContent = fs.readFileSync(filePath, 'utf8');
+  const encodedScript = await minifyAndEncodeJavaScript(fileContent);
+  const bookmarkKey = filePath.substring(bookmarkletsFolder.length + 1);
+
+  bookmarks[bookmarkKey] = `javascript:(function(){${global.jqueryCode};${encodedScript}})();`;
+}
+
+async function traverseDirectory(directoryPath) {
+  const items = fs.readdirSync(directoryPath);
+
+  for (const item of items) {
+    const fullPath = path.join(directoryPath, item);
+
+    if (fs.statSync(fullPath).isFile()) {
+      await processJavaScriptFile(fullPath);
+    } else {
+      await traverseDirectory(fullPath);
+    }
+  }
+}
+
+async function generateBookmarklets() {
+  global.jqueryCode = await minifyAndEncodeJavaScript(
+    fs.readFileSync(path.resolve(__dirname, 'node_modules/jquery/dist/jquery.min.js'), 'utf8')
+  );
+
+  await traverseDirectory(bookmarkletsFolder);
+
+  const bookmarksHtml = netscape(bookmarks);
+  fs.writeFile(outputFilePath, bookmarksHtml, () =>
+    console.log(`[+] Wrote ${Object.keys(bookmarks).length} bookmarks into '${outputFilePath}'.`)
+  );
+}
+
+generateBookmarklets();

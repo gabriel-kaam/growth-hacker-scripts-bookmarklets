@@ -129,4 +129,4 @@ $(document).on('click', selectors.list_of_list__button, (event) => {
 	return true;
 });
 
-console.debug('Rock N Roll Baby !');
+alert("Rock N Roll Baby ! I'm ready");
