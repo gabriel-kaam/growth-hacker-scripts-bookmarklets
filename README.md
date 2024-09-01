@@ -5,12 +5,20 @@ The perfect tool for an handsome growth hacker like yourself ;)
 
 ## Installation
 
+Access the latest version of the file : [here](https://gabriel-kaam.github.io/growth-hacker-scripts-bookmarklets/bookmarklets.html)
+
+Simply Drag and Drop one of the Tools to the Bookmark Bar of your Browser.
+
+## Installation (dev)
+
 ```
 npm install && npm run build
 ```
 
-A `bookmarklets.html` file will be created in the `buid/` folder.  
+A `bookmarklets.html` file will be created.  
 You need to import this file into your browser bookmarks.
+
+## Resources
 
 Here's some help:
 
