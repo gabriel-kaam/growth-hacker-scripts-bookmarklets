@@ -4,7 +4,8 @@
   "description": "A collection of cool bookmarklets for handsome growth hacker",
   "main": "index.js",
   "dependencies": {
-    "jquery": "^3.7.1"
+    "jquery": "^3.7.1",
+    "terser": "^5.31.6"
   },
   "devDependencies": {
     "netscape-bookmarks": "^0.1.0"
