@@ -1,4 +1,3 @@
-var qs = document.querySelector.bind(document);
 var $ = jQuery;
 
 var working = false;
@@ -10,11 +9,15 @@ const TIME_AFTER_CLICK = 500;
 var selectors = {
 	select_all: '[data-sn-view-name="module-account-search-results"] > .p0 input[type="checkbox"]',
 	list_of_list__opener: '.p4 > div > button[data-x--save-menu-trigger]',
-	list_of_list__button: '#hue-web-menu-outlet [data-popper-placement="bottom"] button',
+	list_of_list__item: '#hue-web-menu-outlet [data-popper-placement="bottom"] button',
 	pagination: '[data-sn-view-name="search-pagination"]',
 	pagination_next: '[data-sn-view-name="search-pagination"] .artdeco-pagination__button--next',
 	pagination_page_1: '[data-test-pagination-page-btn="1"] button',
 };
+
+function get_list_name_from_node(node) {
+	return node.querySelector('._list-name_aii1oi').ariaLabel;
+}
 
 function open_list_of_list(callback) {
 	console.debug('Open List of Lists');
@@ -63,11 +66,11 @@ function do_magic_2() {
 
 	setTimeout(() => {
 		open_list_of_list(() => {
-			$(selectors.list_of_list__button).each((idx, button) => {
+			$(selectors.list_of_list__item).each((idx, button) => {
 				var button_name = '';
 
 				try {
-					button_name = button.querySelector('._list-name_aii1oi').ariaLabel;
+					button_name = get_list_name_from_node(button);
 				} catch (e) {
 					return;
 				}
@@ -99,11 +102,11 @@ function do_magic_2() {
 	}, TIME_AFTER_CLICK);
 }
 
-$(document).on('click', selectors.list_of_list__button, (event) => {
+$(document).on('click', selectors.list_of_list__item, (event) => {
 	if(working)
 		return;
 
-	list_name = event.currentTarget.querySelector('._list-name_aii1oi').ariaLabel;
+	list_name = get_list_name_from_node(event.currentTarget);
 
 	console.debug(`A list was selected: "${list_name}"`);
 
