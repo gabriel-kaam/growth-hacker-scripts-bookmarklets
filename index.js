@@ -40,7 +40,12 @@ async function traverseDirectory(directoryPath) {
     const fullPath = path.join(directoryPath, item);
 
     if (fs.statSync(fullPath).isFile()) {
-      await processJavaScriptFile(fullPath);
+      let extension = fullPath.split('.').pop();
+
+      if('js' == extension) {
+        console.debug(`Working on ${fullPath}`);
+        await processJavaScriptFile(fullPath);
+      }
     } else {
       await traverseDirectory(fullPath);
     }
@@ -70,6 +75,7 @@ function insertCustomHtml(netscapeOutput) {
 }
 
 async function generateBookmarklets() {
+  console.debug('Getting jQuery code');
   global.jqueryCode = await minifyAndEncodeJavaScript(
     fs.readFileSync(path.resolve(__dirname, 'node_modules/jquery/dist/jquery.min.js'), 'utf8')
   );
