@@ -3,7 +3,7 @@ var qs = document.querySelector.bind(document);
 var TIME_TO_WAIT = {
   FOR: {
     PROGRAM_WINDOW_TO_OPEN: 1500,
-    NEW_PAGE_TO_LOAD: 1500,
+    NEW_PAGE_TO_LOAD: 2000,
   },
   AFTER: {
     JOINING_A_PROGRAM: 2000,
@@ -11,10 +11,10 @@ var TIME_TO_WAIT = {
 }
 
 function join_one_program() {
-  var join_button = qs('[data-testid="join-button"].test');
+  var join_button = qs('[data-testid="join-button"]');
 
   if(!join_button) {
-    var next_page_button = qs('.ant-pagination-next');
+    var next_page_button = qs('.ant-pagination-next[aria-disabled="false"]');
 
     if(!next_page_button) {
       alert('DONE !');
