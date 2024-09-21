@@ -5,7 +5,7 @@ const terser = require('terser');
 
 const outputFilePath = "bookmarklets.html";
 const bookmarks = {};
-const bookmarkletsFolder = 'bookmarklets';
+const scriptsFolder = 'scripts';
 
 async function minifyAndEncodeJavaScript(code) {
   const minifiedResult = await terser.minify(code, {
@@ -28,7 +28,7 @@ async function minifyAndEncodeJavaScript(code) {
 async function processJavaScriptFile(filePath) {
   const fileContent = fs.readFileSync(filePath, 'utf8');
   const encodedScript = await minifyAndEncodeJavaScript(fileContent);
-  const bookmarkKey = filePath.substring(bookmarkletsFolder.length + 1);
+  const bookmarkKey = filePath.substring(scriptsFolder.length + 1);
 
   bookmarks[bookmarkKey] = `javascript:(function(){${global.jqueryCode};${encodedScript}})();`;
 }
@@ -80,7 +80,7 @@ async function generateBookmarklets() {
     fs.readFileSync(path.resolve(__dirname, 'node_modules/jquery/dist/jquery.min.js'), 'utf8')
   );
 
-  await traverseDirectory(bookmarkletsFolder);
+  await traverseDirectory(scriptsFolder);
 
   let bookmarksHtml = netscape(bookmarks);
   bookmarksHtml = insertCustomHtml(bookmarksHtml);
