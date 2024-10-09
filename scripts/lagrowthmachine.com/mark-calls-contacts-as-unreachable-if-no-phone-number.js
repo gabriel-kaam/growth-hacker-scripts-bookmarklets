@@ -44,55 +44,64 @@ async function markUnreachableContacts() {
 
     await loadAllConversations();
 
-    const conversations = document.querySelectorAll('.conversation');
+    const processedConversations = new Set();
+    let conversations = document.querySelectorAll('.conversation');
 
     for (let conversation of conversations) {
-        try {
-            const nameElement = conversation.querySelector('.line1');
-            const name = nameElement ? nameElement.innerText.split("\n")[0] : "Unknown";
-            console.debug(`Processing conversation: ${name}`);
+        const nameElement = conversation.querySelector('.line1');
+        const name = nameElement ? nameElement.innerText.split("\n")[0] : "Unknown";
 
-            conversation.click();
-            await sleep(delays.action);
+        if (processedConversations.has(name)) {
+            console.debug(`Already processed conversation: ${name}, skipping.`);
+            continue;
+        }
 
-            const itemPhone = await waitForElement('#item_phone');
-            if (!itemPhone) {
-                console.debug(`Phone details not found for ${name}, skipping.`);
-                continue;
-            }
+        console.debug(`Processing conversation: ${name}`);
+        processedConversations.add(name);
 
-            const phoneNumber = itemPhone.value.trim();
-            if (phoneNumber) {
-                console.debug(`Phone number found for ${name}: ${phoneNumber}`);
-            } else {
-                console.debug(`Phone number empty for ${name}, marking as unreachable.`);
+        conversation.click();
+        await sleep(delays.action);
 
-                const snoozeDropdown = document.querySelector('.snooze_complete_wrapper > .btn');
-                if (snoozeDropdown) {
-                    snoozeDropdown.click();
-                    await sleep(delays.action);
+        const itemPhone = await waitForElement('#item_phone');
+        if (!itemPhone) {
+            console.debug(`Phone details not found for ${name}, skipping.`);
+            continue;
+        }
 
-                    const completeDiv = await waitForElement('.complete');
-                    if (completeDiv) {
-                        const clickableItems = completeDiv.querySelectorAll('.item.clickable');
-                        if (clickableItems.length >= 2) {
-                            clickableItems[1].click();
-                            console.debug(`Marked ${name} as unreachable.`);
-                            await sleep(delays.action);
-                        } else {
-                            console.debug(`Clickable items not found in complete div for ${name}.`);
-                        }
+        const phoneNumber = itemPhone.value.trim();
+        if (phoneNumber) {
+            console.debug(`Phone number found for ${name}: ${phoneNumber}`);
+        } else {
+            console.debug(`Phone number empty for ${name}, marking as unreachable.`);
+
+            const snoozeDropdown = document.querySelector('.snooze_complete_wrapper > .btn');
+            if (snoozeDropdown) {
+                snoozeDropdown.click();
+                await sleep(delays.action);
+
+                const completeDiv = await waitForElement('.complete');
+                if (completeDiv) {
+                    const clickableItems = completeDiv.querySelectorAll('.item.clickable');
+                    if (clickableItems.length >= 2) {
+                        clickableItems[1].click();
+                        console.debug(`Marked ${name} as unreachable.`);
+                        await sleep(delays.action);
                     } else {
-                        console.debug(`Complete div not found for ${name}.`);
+                        console.debug(`Clickable items not found in complete div for ${name}.`);
                     }
                 } else {
-                    console.debug(`Snooze dropdown not found for ${name}.`);
+                    console.debug(`Complete div not found for ${name}.`);
                 }
+            } else {
+                console.debug(`Snooze dropdown not found for ${name}.`);
             }
-        } catch (error) {
-            console.error(`Error processing conversation: ${error.message}`);
         }
+
+        conversations = document.querySelectorAll('.conversation');
     }
+
+    console.debug('All conversations processed.');
 }
+
 
 markUnreachableContacts();
