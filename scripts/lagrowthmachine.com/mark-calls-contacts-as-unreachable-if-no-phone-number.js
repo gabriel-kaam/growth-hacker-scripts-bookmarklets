@@ -1,15 +1,14 @@
 async function markUnreachableContacts() {
     const delays = {
         redirect: 2000,
-        scroll: 2000,
+        scroll: 4000,
         action: 1000,
-        elementTimeout: 5000
+        elementTimeout: 5000,
     };
 
     if (window.location.href !== 'https://app.lagrowthmachine.com/tasks/calls') {
         console.debug('Redirecting to the correct page');
         window.location.href = 'https://app.lagrowthmachine.com/tasks/calls';
-        await sleep(delays.redirect);
         return;
     }
 
@@ -46,6 +45,8 @@ async function markUnreachableContacts() {
 
     const processedConversations = new Set();
     let conversations = document.querySelectorAll('.conversation');
+    let totalConversations = conversations.length;
+    let counter = 1;
 
     for (let conversation of conversations) {
         const nameElement = conversation.querySelector('.line1');
@@ -56,9 +57,10 @@ async function markUnreachableContacts() {
             continue;
         }
 
-        console.debug(`Processing conversation: ${name}`);
+        console.debug(`Processing conversation (${counter}/${totalConversations}): ${name}`);
         processedConversations.add(name);
 
+        conversation.scrollIntoView();
         conversation.click();
         await sleep(delays.action);
 
@@ -70,9 +72,9 @@ async function markUnreachableContacts() {
 
         const phoneNumber = itemPhone.value.trim();
         if (phoneNumber) {
-            console.debug(`Phone number found for ${name}: ${phoneNumber}`);
+            console.debug(`Phone number found: ${phoneNumber}`);
         } else {
-            console.debug(`Phone number empty for ${name}, marking as unreachable.`);
+            console.debug(`Phone number empty, marking as unreachable.`);
 
             const snoozeDropdown = document.querySelector('.snooze_complete_wrapper > .btn');
             if (snoozeDropdown) {
@@ -97,11 +99,9 @@ async function markUnreachableContacts() {
             }
         }
 
+        counter++;
         conversations = document.querySelectorAll('.conversation');
     }
 
     console.debug('All conversations processed.');
 }
-
-
-markUnreachableContacts();
