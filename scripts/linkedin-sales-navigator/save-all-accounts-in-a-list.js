@@ -19,6 +19,9 @@ var selectors = {
 function get_list_name_from_node(node) {
     return node.querySelector('._list-name_aii1oi').ariaLabel;
 }
+function get_count_from_node(node) {
+    return parseInt(node.querySelector('._list-entity-count_aii1oi').innerText.replace(' ', '').match(/[0-9]+/)[0]);
+}
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -116,15 +119,26 @@ async function do_magic_2() {
             const button_name = get_list_name_from_node(button);
 
             if (list_name === button_name) {
-                console.debug(`Found our LIST! "[${idx}] ${button_name}"`);
-                button.click();
-                listSelected = true;
-                return false;
+                const count = get_count_from_node(button);
+
+                console.debug(`Found our LIST! "[${idx}] ${button_name}" - Count: ${count}`);
+
+                if(count >= 1000) {
+                    alert(`List ${button_name} is already full. Need to select another one.`);
+                    listSelected = false;
+                    return false;
+                } else {
+                    button.click();
+                    listSelected = true;
+                    return false;
+
+                }
             }
         });
 
         if (!listSelected) {
             console.debug("Could not find the list on this page.");
+            return false;
         }
 
         await sleep(TIME_AFTER_CLICK);
