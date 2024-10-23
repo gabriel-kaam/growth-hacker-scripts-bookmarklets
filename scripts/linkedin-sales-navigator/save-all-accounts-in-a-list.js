@@ -50,8 +50,9 @@ async function open_list_of_list() {
         } else {
             console.debug("\t -> already open");
         }
-        sleep(TIME_AFTER_CLICK);
+        await sleep(TIME_AFTER_CLICK);
     } catch (error) {
+        working = false;
         console.error(error);
     }
 }
@@ -66,8 +67,9 @@ async function close_list_of_list() {
         } else {
             console.debug("\t -> already closed");
         }
-        sleep(TIME_AFTER_CLICK);
+        await sleep(TIME_AFTER_CLICK);
     } catch (error) {
+        working = false;
         console.error(error);
     }
 }
@@ -79,12 +81,14 @@ async function it_was_last_page() {
         const nextButton = await waitForElement(selectors.pagination_next);
         if (nextButton.is(':disabled')) {
             console.debug('It was the last page!');
+
             working = false;
             alert("Process completed!");
             return true;
         }
         return false;
     } catch (error) {
+        working = false;
         console.error(error);
         return false;
     }
@@ -102,7 +106,7 @@ async function do_magic_2() {
             console.debug("\t -> already selected");
         }
 
-        sleep(TIME_AFTER_CLICK);
+        await sleep(TIME_AFTER_CLICK);
         await open_list_of_list();
 
         const listItems = await waitForElement(selectors.list_of_list__item);
@@ -123,7 +127,7 @@ async function do_magic_2() {
             console.debug("Could not find the list on this page.");
         }
 
-        sleep(TIME_AFTER_CLICK);
+        await sleep(TIME_AFTER_CLICK);
         await close_list_of_list();
 
         if (await it_was_last_page()) return;
@@ -132,11 +136,12 @@ async function do_magic_2() {
         const nextButton = await waitForElement(selectors.pagination_next);
         nextButton.click();
 
-        sleep(TIME_FOR_PAGE_TO_LOAD);
+        await sleep(TIME_FOR_PAGE_TO_LOAD);
         await do_magic_2();
 
         return false;
     } catch (error) {
+        working = false;
         console.error(error);
     }
 }
@@ -160,12 +165,12 @@ $(document).on('click', selectors.list_of_list__item, async (event) => {
                 pageOneButton.click();
             }
 
-            sleep(TIME_FOR_PAGE_TO_LOAD);
+            await sleep(TIME_FOR_PAGE_TO_LOAD);
             await do_magic_2();
         } catch (error) {
             console.error(error);
         } finally {
-            console.debug('- Setting working to FALSE');
+            working = false;
         }
     }
 
