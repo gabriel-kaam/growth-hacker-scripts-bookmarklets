@@ -105,3 +105,5 @@ async function markUnreachableContacts() {
 
     console.debug('All conversations processed.');
 }
+
+markUnreachableContacts()
