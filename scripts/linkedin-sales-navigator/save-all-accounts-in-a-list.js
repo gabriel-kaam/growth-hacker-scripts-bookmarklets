@@ -8,7 +8,7 @@ const TIME_AFTER_CLICK = 500;
 const TIMEOUT_LIMIT = 10000;
 
 var selectors = {
-    select_all: '[data-sn-view-name="module-account-search-results"] > .p0 input[type="checkbox"]',
+    select_all: '[data-sn-view-name="module-account-search-results"] > .p0 input[type="checkbox"], [data-sn-view-name="module-lead-search-results"] > .p0 input[type="checkbox"]',
     list_of_list__opener: '.p4 > div > button[data-x--save-menu-trigger]',
     list_of_list__item: '#hue-web-menu-outlet [data-popper-placement="bottom"] button',
     pagination: '[data-sn-view-name="search-pagination"]',
