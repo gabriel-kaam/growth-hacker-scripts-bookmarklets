@@ -2,10 +2,12 @@ var $ = jQuery;
 
 var working = false;
 var list_name;
+var limit;
 
 const TIME_FOR_PAGE_TO_LOAD = 2000;
 const TIME_AFTER_CLICK = 500;
 const TIMEOUT_LIMIT = 10000;
+const LIMIT_MAX = 1000;
 
 var selectors = {
     select_all: '[data-sn-view-name="module-account-search-results"] > .p0 input[type="checkbox"], [data-sn-view-name="module-lead-search-results"] > .p0 input[type="checkbox"]',
@@ -123,7 +125,7 @@ async function do_magic_2() {
 
                 console.debug(`Found our LIST! "[${idx}] ${button_name}" - Count: ${count}`);
 
-                if(count >= 1000) {
+                if(count >= limit) {
                     alert(`List ${button_name} is already full. Need to select another one.`);
                     listSelected = false;
                     return false;
@@ -166,7 +168,11 @@ $(document).on('click', selectors.list_of_list__item, async (event) => {
     list_name = get_list_name_from_node(event.currentTarget);
     console.debug(`A list was selected: "${list_name}"`);
 
-    if (confirm(`Save ALL pages to this list: "${list_name}" ?`)) {
+    limit = prompt(`How many leads should we save from this list ? (ESC to cancel) "${list_name}"`, LIMIT_MAX);
+
+    if (limit != null) {
+        limit = Math.max(limit, LIMIT_MAX);
+
         working = true;
         console.debug('+ Setting working to TRUE');
 
