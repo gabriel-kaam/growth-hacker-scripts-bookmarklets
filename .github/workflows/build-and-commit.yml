@@ -15,6 +15,7 @@ jobs:
 
       - name: Build the project
         run: |
+          npm install
           npm run build
 
       - name: Commit built file
