@@ -173,7 +173,7 @@ $(document).on('click', selectors.list_of_list__item, async (event) => {
     limit = prompt(`How many leads should we save from this list ? (ESC to cancel) "${list_name}"`, LIMIT_MAX);
 
     if (limit != null) {
-        limit = Math.max(limit, LIMIT_MAX);
+        limit = Math.min(limit, LIMIT_MAX);
 
         working = true;
         console.debug('+ Setting working to TRUE');
