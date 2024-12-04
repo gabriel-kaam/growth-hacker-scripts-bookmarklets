@@ -22,7 +22,9 @@ function get_list_name_from_node(node) {
     return node.querySelector('._list-name_aii1oi').ariaLabel;
 }
 function get_count_from_node(node) {
-    return parseInt(node.querySelector('._list-entity-count_aii1oi').innerText.replace(' ', '').match(/[0-9]+/)[0]);
+    return parseInt(
+        node.querySelector('._list-entity-count_aii1oi').innerText.replace(' ', '').match(/[0-9]+/)[0]
+        );
 }
 
 function sleep(ms) {
@@ -123,7 +125,7 @@ async function do_magic_2() {
             if (list_name === button_name) {
                 const count = get_count_from_node(button);
 
-                console.debug(`Found our LIST! "[${idx}] ${button_name}" - Count: ${count}`);
+                console.debug(`Found our LIST! "[${idx}] ${button_name}" - Count: ${count} | Limit: ${limit}`);
 
                 if(count >= limit) {
                     alert(`List ${button_name} is already full. Need to select another one.`);
